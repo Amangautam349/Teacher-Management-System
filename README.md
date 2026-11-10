@@ -220,6 +220,37 @@ The PostgreSQL schema includes tables for:
 - Leave requests
 
 The schema separates user authentication information from teacher profile information.
+## Application Screenshots
+
+The following screenshots demonstrate the current application interface and implemented modules.
+
+### 1. Admin Login
+
+![Admin Login](docs/screenshots/login.JPG)
+
+### 2. Admin Dashboard
+
+![Admin Dashboard](docs/screenshots/dashboard.JPG)
+
+### 3. Teacher Management
+
+![Teacher List](docs/screenshots/teachers-list.JPG)
+
+![Add Teacher](docs/screenshots/add-teacher.JPG)
+
+![Teacher Status](docs/screenshots/teacher-status.JPG)
+
+### 4. Department Management
+
+![Department List](docs/screenshots/departments-list.JPG)
+
+![Add Department](docs/screenshots/add-department.JPG)
+
+![Department Status](docs/screenshots/department-status.JPG)
+
+### 5. Additional Application Screen
+
+![Additional Application Screen](docs/screenshots/additional-screen-2.JPG)
 
 ## Application Architecture
 
