@@ -1,74 +1,262 @@
 # Teacher Management System
 
-A full-stack Teacher Management System — React (Vite + Tailwind) frontend,
-Node.js/Express REST API, PostgreSQL database, JWT authentication with
-role-based access (Super Admin / Teacher).
+A full-stack web application for managing teachers, departments, and school administration. Built with React, Node.js, Express, and PostgreSQL.
 
-## Status: Week 1–2 slice complete
+## Project Overview
 
-Built so far, fully working end-to-end:
-- [x] Project structure (client / server / database)
-- [x] PostgreSQL schema (users, departments, teachers, subjects, timetable,
-      attendance, leave_requests — later features already have tables ready)
-- [x] JWT auth (login, `/me`, role middleware)
-- [x] Dashboard layout + live summary stats
-- [x] Teacher CRUD (create also provisions their login account, transactionally)
-- [x] Department CRUD
-- [x] Responsive shell (sidebar/navbar), role-aware navigation
+The Teacher Management System provides a centralized platform for managing teacher profiles, departments, user accounts, and administrative information.
 
-Not yet built (next in the roadmap — see original plan):
-- [ ] Attendance marking
-- [ ] Leave request/approval flow
-- [ ] Timetable (8-period grid)
-- [ ] Calendar + notices
-- [ ] Chat (Socket.IO server is already wired up in `server.js`, ready to use)
-- [ ] Reports
-- [ ] Deployment (Vercel / Render / Neon)
+The application uses JWT authentication and role-based access control for Super Admin and Teacher accounts.
 
-## Getting started
+## Current Development Status
 
-### 1. Database
-Create a free Postgres database (e.g. on [Neon](https://neon.tech)), then run:
-```bash
-psql "$DATABASE_URL" -f database/schema.sql
+### Implemented features
+
+- React frontend with Vite and Tailwind CSS
+- Node.js and Express REST API
+- PostgreSQL database and relational schema
+- JWT-based authentication
+- Role-based access control
+- Super Admin login
+- Dashboard with summary statistics
+- Teacher management (CRUD)
+- Department management (CRUD)
+- Teacher login account provisioning
+- Responsive application layout with sidebar and navigation
+
+### Planned features
+
+- Attendance management
+- Leave request and approval workflow
+- Timetable management with an 8-period grid
+- Calendar and school notices
+- Real-time messaging and chat
+- Reports and analytics
+- Production deployment
+
+*Development is ongoing. Features listed as planned are not yet complete.*
+
+## Technology Stack
+
+| Layer | Technologies |
+|---|---|
+| Frontend | React, Vite, React Router, Axios |
+| Styling | Tailwind CSS |
+| Backend | Node.js, Express.js |
+| Authentication | JWT, bcrypt |
+| Database | PostgreSQL |
+| Real-time infrastructure | Socket.IO |
+
+## Project Structure
+
+```text
+teacher-management-system/
+│
+├── client/                 # React frontend
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
+├── server/                 # Express backend
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── routes/
+│   ├── utils/
+│   └── package.json
+│
+├── database/
+│   └── schema.sql          # Database schema
+│
+├── README.md
+└── .gitignore
 ```
 
-### 2. Backend
+## Getting Started
+
+### Prerequisites
+
+Install the following:
+
+- Node.js and npm
+- PostgreSQL
+- Git
+
+### 1. Clone the repository
+
+```powershell
+git clone https://github.com/Amangautam349/Teacher-Management-System.git
+
+cd Teacher-Management-System
+```
+
+### 2. Set up the database
+
+Create a PostgreSQL database named:
+
+```text
+teacher_management
+```
+
+Run the database schema from the project root:
+
+```powershell
+& "C:\Program Files\PostgreSQL\18\bin\psql.exe" -U postgres -h localhost -p 5432 -d teacher_management -f database/schema.sql
+```
+
+If PostgreSQL's `psql` command is already available in your PATH, you can alternatively use:
+
 ```bash
+psql -U postgres -d teacher_management -f database/schema.sql
+```
+
+### 3. Configure the backend
+
+Open the server directory:
+
+```powershell
 cd server
-npm install
-cp .env.example .env   # fill in DATABASE_URL and JWT_SECRET
-npm run seed            # creates your first Super Admin login
-npm run dev              # http://localhost:5000
 ```
 
-### 3. Frontend
-```bash
+Create the environment file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Update `server/.env` with your local PostgreSQL connection details and a strong, unique JWT secret.
+
+Example configuration structure:
+
+```env
+PORT=5000
+NODE_ENV=development
+DATABASE_URL=postgresql://postgres:YOUR_ENCODED_PASSWORD@localhost:5432/teacher_management
+JWT_SECRET=YOUR_LONG_RANDOM_SECRET
+JWT_EXPIRES_IN=7d
+CLIENT_ORIGIN=http://localhost:5173
+
+SEED_ADMIN_EMAIL=admin@tms.local
+SEED_ADMIN_PASSWORD=YOUR_STRONG_ADMIN_PASSWORD
+SEED_ADMIN_NAME=System Admin
+```
+
+Do not commit your actual `.env` file or share its credentials.
+
+Install dependencies:
+
+```powershell
+npm install
+```
+
+Create the initial Super Admin account:
+
+```powershell
+npm run seed
+```
+
+Start the backend:
+
+```powershell
+npm run dev
+```
+
+Backend address:
+
+`http://localhost:5000`
+
+### 4. Configure the frontend
+
+Open a second terminal at the project root:
+
+```powershell
 cd client
-npm install
-cp .env.example .env    # point VITE_API_URL at your backend
-npm run dev               # http://localhost:5173
 ```
 
-Log in with the email/password you set as `SEED_ADMIN_EMAIL` /
-`SEED_ADMIN_PASSWORD` in `server/.env`.
+Create the frontend environment file:
 
-## Why things are structured this way
+```powershell
+Copy-Item .env.example .env
+```
 
-- **Teacher = users row + teachers row.** `users` handles anyone who can log
-  in (admin or teacher) and holds the role. `teachers` holds the profile
-  fields that only apply to teachers. Creating a teacher writes both rows
-  in a single DB transaction (see `teacherController.js`) so you can never
-  end up with a login and no profile, or vice versa.
-- **Role checks happen in middleware, not in the UI.** `requireRole()` on
-  the backend is the actual security boundary; hiding buttons in the React
-  UI is just a UX nicety on top of that. Never trust the frontend alone.
-- **Schema already includes tables for later weeks** (timetable, attendance,
-  leave_requests) so each new feature is "build the endpoint," not
-  "redesign the database mid-project."
+Ensure `client/.env` contains:
 
-## Tech stack
-Frontend: React, Vite, React Router, Axios, Tailwind CSS
-Backend: Node.js, Express.js, JWT, bcrypt, Multer (ready for file uploads), Socket.IO (ready for chat)
-Database: PostgreSQL
-Deployment target: Vercel (client) / Render (server) / Neon (database)
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+Install dependencies:
+
+```powershell
+npm install
+```
+
+Start the frontend:
+
+```powershell
+npm run dev
+```
+
+Frontend address:
+
+`http://localhost:5173`
+
+### 5. Log in
+
+Use the Super Admin email and password configured in `server/.env`.
+
+Change the initial administrator password before using the system with real data.
+
+## Database Design
+
+The PostgreSQL schema includes tables for:
+
+- Users
+- Departments
+- Teachers
+- Subjects
+- Timetable
+- Attendance
+- Leave requests
+
+The schema separates user authentication information from teacher profile information.
+
+## Application Architecture
+
+### Authentication and authorization
+
+JWT authentication is used to identify authenticated users. Role-based middleware handles access restrictions on the backend.
+
+### Teacher management
+
+Teacher profiles are associated with user accounts. Teacher creation provisions the corresponding login account through a database transaction.
+
+### Department management
+
+Departments are managed through the backend API and displayed in the React frontend.
+
+## Development Roadmap
+
+The project is being developed incrementally, with a focus on building and testing each module before moving to the next stage.
+
+Future development will include attendance, leave management, scheduling, communication, and reporting.
+
+## Deployment Plans
+
+Potential deployment services:
+
+- Frontend: Vercel
+- Backend: Render
+- Database: Neon PostgreSQL
+
+Production deployment and configuration are not yet completed.
+
+## Author
+
+**Aman Gautam**
+
+GitHub: [@Amangautam349](https://github.com/Amangautam349)
+
+## License
+
+This project is currently under development. A formal license can be added when the distribution terms are decided.
